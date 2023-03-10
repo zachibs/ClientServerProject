@@ -5,17 +5,10 @@ from scapy.layers.inet import IP, UDP
 from scapy.layers.l2 import Ether
 
 # Constants
-SERVER_IP = "192.168.1.1"
-CLIENT_IP = "192.168.1.255"
-BROADCAST = "255.255.255.255"
-MASK_SUBNET = "255.255.255.0"
-NETWORK_INTERFACE = "eth0"
-DPORT = 68
-SPORT = 67
-ONE_HOUR_IN_SECONDS = 600
+from config import *
 
 # Function to handle incoming DHCP packets
-def dhcp_server(pkt):
+def handle_dhcp_packet(pkt):
     # Get MAC address of the network interface
     server_mac_address = get_if_hwaddr(NETWORK_INTERFACE)
     # Get MAC address of the client requesting DHCP
@@ -61,4 +54,4 @@ if __name__ == '__main__':
     # Print message indicating that the DHCP server is starting
     print("Starting DHCP server...")
     # Sniff for DHCP packets on the specified network interface
-    sniff(filter='udp and (port 67 or 68)', prn=dhcp_server ,iface=NETWORK_INTERFACE)
+    sniff(filter='udp and (port 67 or 68)', prn=handle_dhcp_packet ,iface=NETWORK_INTERFACE)
