@@ -11,16 +11,6 @@ def create_server_socket(server_ip: str, server_port: int) -> socket.socket:
     server_socket.listen(1)
 
     return server_socket
-
-
-def add_value(session, data):
-    session = database.get_session()
-    name = data["name"]
-    population = data["population"]
-    ethnicity = data["ethnicity"]
-    founding_year = data["founding_year"]
-    in_war = data["in_war"]
-    return database.add_value_to_db(session, name, population, ethnicity, founding_year, in_war)
                 
 
 if __name__ == "__main__":
@@ -34,7 +24,7 @@ if __name__ == "__main__":
             try:
                 # Receiving
                 print("waiting for data from the client")
-                client_socket.settimeout(10.0)
+                client_socket.settimeout(30.0)
                 data = client_socket.recv(BUFFER_SIZE)
                 data = json.loads(data.decode())
                 print(f'Received "{data}" from {client_address} OPENED')
@@ -43,7 +33,12 @@ if __name__ == "__main__":
 
                 if (choice == 1):
                     print("Client choose to add a country")
-                    bool_response = add_value(session, data)
+                    name = data["name"]
+                    population = data["population"]
+                    ethnicity = data["ethnicity"]
+                    founding_year = data["founding_year"]
+                    in_war = data["in_war"]
+                    bool_response = database.add_value_to_db(session, name, population, ethnicity, founding_year, in_war)
                     message = "Added value to db" if bool_response else "Value was already in db"
 
                 elif (choice == 2):
@@ -81,7 +76,7 @@ if __name__ == "__main__":
 
                 elif (choice == 6):
                     print("Client choose to get all countries with population over number")
-                    countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, data["number"]))]
+                    countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, int(data["number"])))]
                     bool_response = True if len(countries) > 0 else False
                     message = "Countries matched - "
                     for country in countries:
@@ -90,7 +85,7 @@ if __name__ == "__main__":
 
                 elif (choice == 7):
                     print("Client choose to get all countries that founded after year")
-                    countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, data["year"]))]
+                    countries = [x.to_dict() for x in list(database.get_countries_founded_after_year(session, data["year"]))]
                     bool_response = True if len(countries) > 0 else False
                     message = "Countries matched - "
                     for country in countries:
@@ -104,20 +99,19 @@ if __name__ == "__main__":
 
                 elif (choice == 9):
                     print("Client choose to change a country's war status")
-                    bool_response = database.change_country_war_status(session, data["name"], data["new_in_war"])
+                    bool_response = database.change_country_war_status(session, data["name"], data["new_war_status"])
                     message = "Changed value" if bool_response else "Couldn't change value"
 
                 elif (choice == 10):
                     print("Client choose to change a country's population")
-                    bool_response = database.change_country_war_status(session, data["name"], data["new_population"])
+                    bool_response = database.change_country_population(session, data["name"], data["new_population"])
                     message = "Changed value" if bool_response else "Couldn't change value"
                 else:
                     client_socket.close()
                     print(f'Connection from {client_address} CLOSED')
                     break
 
-                # Response
-                response = json.dumps({'status': bool_response, "message": message})
+                response = json.dumps({'status': 200 if bool_response else 404, "message": message})
                 client_socket.sendall(response.encode())
                 print(f'Sent "{response}" to {client_address}')
             

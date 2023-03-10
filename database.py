@@ -61,7 +61,7 @@ def get_all_countries(session_instance):
     return result
 
 def get_country_by_name(session_instance, country_name: str):
-    result = session_instance.query(Country).filter(Country.name == country_name).first()
+    result = session_instance.query(Country).filter(Country.name == country_name)
     return result
 
 def get_countries_by_ethnicity(session_instance, ethnicity: str):
