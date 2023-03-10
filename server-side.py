@@ -25,7 +25,7 @@ def receive_data_from_client(client_socket: socket.socket, client_address: str) 
     print(f'Received "{data}" from {client_address} OPENED')
     return data
 
-def first_choice(session, data: json) -> tuple:
+def add_country_to_db(session, data: json) -> tuple:
     print("Client choose to add a country")
     name = data["name"]
     population = data["population"]
@@ -36,7 +36,7 @@ def first_choice(session, data: json) -> tuple:
     message = "Added value to db" if bool_response else "Value was already in db"
     return bool_response, message
 
-def second_choice(session, data: json) -> tuple:
+def get_all_countries_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries")
     countries = [x.to_dict() for x in list(database.get_all_countries(session))]
     bool_response = True if len(countries) > 0 else False
@@ -46,14 +46,14 @@ def second_choice(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
-def third_choice(session, data: json) -> tuple:
+def get_country_by_name_from_db(session, data: json) -> tuple:
     print("Client choose to get a specific country")
     country = list(database.get_country_by_name(session,data["name"]))
     bool_response = True if len(country) > 0 else False
     message = f"Country matched - {country[0].to_dict()}"
     return bool_response, message
 
-def fourth_choice(session, data: json) -> tuple:
+def get_country_by_ethnicity_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries by a specific ethnicity")
     countries = [x.to_dict() for x in list(database.get_countries_by_ethnicity(session, data["ethnicity"]))]
     bool_response = True if len(countries) > 0 else False
@@ -63,7 +63,7 @@ def fourth_choice(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
-def fifth_choice(session, data: json) -> tuple:
+def get_all_countries_by_war_status_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries by a specific war status")
     countries = [x.to_dict() for x in list(database.get_counties_by_war_status(session, data["war_status"]))]
     bool_response = True if len(countries) > 0 else False
@@ -73,7 +73,7 @@ def fifth_choice(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
-def sixth_choice(session, data: json) -> tuple:
+def get_all_countries_over_population_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries with population over number")
     countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, int(data["number"])))]
     bool_response = True if len(countries) > 0 else False
@@ -83,7 +83,7 @@ def sixth_choice(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
-def seventh_choice(session, data: json) -> tuple:
+def get_all_countries_founded_after_year_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries that founded after year")
     countries = [x.to_dict() for x in list(database.get_countries_founded_after_year(session, data["year"]))]
     bool_response = True if len(countries) > 0 else False
@@ -93,19 +93,19 @@ def seventh_choice(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
-def eighth_choice(session, data: json) -> tuple:
+def change_a_contry_name_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's name")
     bool_response = database.change_country_name(session, data["old_name"], data["new_name"])
     message = "Changed value" if bool_response else "Couldn't change value"
     return bool_response, message
 
-def ninth_choice(session, data: json) -> tuple:
+def change_a_country_war_status_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's war status")
     bool_response = database.change_country_war_status(session, data["name"], data["new_war_status"])
     message = "Changed value" if bool_response else "Couldn't change value"
     return bool_response, message
 
-def tenth_choice(session, data: json) -> tuple:
+def change_a_country_population_count_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's population")
     bool_response = database.change_country_population(session, data["name"], data["new_population"])
     message = "Changed value" if bool_response else "Couldn't change value"
@@ -122,34 +122,34 @@ def main():
                 session = database.get_session()
 
                 if (choice == 1):
-                    bool_response, message = first_choice(session, data)
+                    bool_response, message = add_country_to_db(session, data)
 
                 elif (choice == 2):
-                    bool_response, message = second_choice(session, data)
+                    bool_response, message = get_all_countries_from_db(session, data)
 
                 elif (choice == 3):
-                    bool_response, message = third_choice(session, data)
+                    bool_response, message = get_country_by_name_from_db(session, data)
 
                 elif (choice == 4):
-                    bool_response, message = fourth_choice(session, data)
+                    bool_response, message = get_country_by_ethnicity_from_db(session, data)
 
                 elif (choice == 5):
-                    bool_response, message = fifth_choice(session, data)
+                    bool_response, message = get_all_countries_by_war_status_from_db(session, data)
 
                 elif (choice == 6):
-                    bool_response, message = sixth_choice(session, data)
+                    bool_response, message = get_all_countries_over_population_from_db(session, data)
 
                 elif (choice == 7):
-                    bool_response, message = seventh_choice(session, data)
+                    bool_response, message = get_all_countries_founded_after_year_from_db(session, data)
 
                 elif (choice == 8):
-                    bool_response, message = eighth_choice(session, data)
+                    bool_response, message = change_a_contry_name_in_db(session, data)
 
                 elif (choice == 9):
-                    bool_response, message = ninth_choice(session, data)
+                    bool_response, message = change_a_country_war_status_in_db(session, data)
 
                 elif (choice == 10):
-                    bool_response, message = tenth_choice(session, data)
+                    bool_response, message = change_a_country_population_count_in_db(session, data)
                 else:
                     client_socket.close()
                     print(f'Connection from {client_address} CLOSED')
