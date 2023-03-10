@@ -1,3 +1,4 @@
 greenlet==2.0.2
+scapy==2.5.0
 SQLAlchemy==2.0.5.post1
 typing-extensions==4.5.0
