@@ -88,47 +88,50 @@ def change_country_population() -> json:
 def main():
     client_socket = connect_to_server("localhost", 1234)
 
-    if client_socket != None:
-        print("Welcome to the client side !")
-        while True:
-            print_menu()
-            try:
-                choice = get_user_choice()
-                if (choice == 1):
-                    request = create_new_entry()
-                elif (choice == 2):
-                    request = get_all_countries()
-                elif (choice == 3):
-                    request = get_country_by_name()
-                elif (choice == 4):
-                    request = get_country_by_ethnicity()
-                elif (choice == 5):
-                    request = get_country_by_war_status()
-                elif (choice == 6):
-                    request = get_countries_over_population_number()
-                elif (choice == 7):
-                    request = get_countries_founded_after_year()
-                elif (choice == 8):
-                    request = change_country_name()
-                elif (choice == 9):
-                    request = change_country_war_status()
-                elif (choice == 10):
-                    request = change_country_population()
-                else:
-                    break
-
-                client_socket.sendall(request.encode())
-                
-                client_socket.settimeout(3.0)
-                data = client_socket.recv(BUFFER_SIZE)
-                data = json.loads(data.decode())
-                print(data)
-
-            except Exception as e:
-                client_socket.close()
+    if client_socket == None:
+        return
+    
+    print("Welcome to the client side !")
+    
+    while True:
+        print_menu()
+        try:
+            choice = get_user_choice()
+            if (choice == 1):
+                request = create_new_entry()
+            elif (choice == 2):
+                request = get_all_countries()
+            elif (choice == 3):
+                request = get_country_by_name()
+            elif (choice == 4):
+                request = get_country_by_ethnicity()
+            elif (choice == 5):
+                request = get_country_by_war_status()
+            elif (choice == 6):
+                request = get_countries_over_population_number()
+            elif (choice == 7):
+                request = get_countries_founded_after_year()
+            elif (choice == 8):
+                request = change_country_name()
+            elif (choice == 9):
+                request = change_country_war_status()
+            elif (choice == 10):
+                request = change_country_population()
+            else:
                 break
 
-        client_socket.close()
+            client_socket.sendall(request.encode())
+            
+            client_socket.settimeout(3.0)
+            data = client_socket.recv(BUFFER_SIZE)
+            data = json.loads(data.decode())
+            print(data)
+
+        except Exception as e:
+            client_socket.close()
+            break
+
+    client_socket.close()
 
 if __name__ == "__main__":
     main()
