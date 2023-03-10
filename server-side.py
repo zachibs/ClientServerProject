@@ -4,19 +4,22 @@ import json
 
 BUFFER_SIZE = 1024
 
+# Creates a server socket with a specified IP address and port number.
 def create_server_socket(server_ip: str, server_port: int) -> socket.socket:
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (server_ip, server_port)
     server_socket.bind(server_address)
     server_socket.listen(1)
     return server_socket
-                
-def connect_to_client(server_socket: socket.socket) -> socket.socket:
+
+# Waits for and accepts a client connection, returning a socket and client address tuple.
+def connect_to_client(server_socket: socket.socket) -> tuple:
     print('Waiting for a connection')
     client_socket, client_address = server_socket.accept()
     print(f'Connection from {client_address}')
     return client_socket, client_address
 
+# Receives and decodes data from the client and returns it as a JSON object.
 def receive_data_from_client(client_socket: socket.socket, client_address: str) -> json:
     print("waiting for data from the client")
     client_socket.settimeout(30.0)
@@ -25,6 +28,7 @@ def receive_data_from_client(client_socket: socket.socket, client_address: str) 
     print(f'Received "{data}" from {client_address} OPENED')
     return data
 
+# Adds a new country to the database, returning a tuple of a boolean indicating success and a message.
 def add_country_to_db(session, data: json) -> tuple:
     print("Client choose to add a country")
     name = data["name"]
@@ -36,6 +40,7 @@ def add_country_to_db(session, data: json) -> tuple:
     message = "Added value to db" if bool_response else "Value was already in db"
     return bool_response, message
 
+# Retrieves all countries from the database and returns them as a tuple of a boolean indicating success and a message.
 def get_all_countries_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries")
     countries = [x.to_dict() for x in list(database.get_all_countries(session))]
@@ -46,6 +51,7 @@ def get_all_countries_from_db(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
+# Retrieves a specific country from the database by name and returns it as a tuple of a boolean indicating success and a message.
 def get_country_by_name_from_db(session, data: json) -> tuple:
     print("Client choose to get a specific country")
     country = list(database.get_country_by_name(session,data["name"]))
@@ -53,6 +59,7 @@ def get_country_by_name_from_db(session, data: json) -> tuple:
     message = f"Country matched - {country[0].to_dict()}"
     return bool_response, message
 
+# Retrieves all countries from the database that match a specified ethnicity and returns them as a tuple of a boolean indicating success and a message.
 def get_country_by_ethnicity_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries by a specific ethnicity")
     countries = [x.to_dict() for x in list(database.get_countries_by_ethnicity(session, data["ethnicity"]))]
@@ -63,48 +70,91 @@ def get_country_by_ethnicity_from_db(session, data: json) -> tuple:
         message += " "
     return bool_response, message
 
+
+# Function to get all countries by a specific war status
 def get_all_countries_by_war_status_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries by a specific war status")
+    
+    # Get list of countries with specified war status from database and convert to dict
     countries = [x.to_dict() for x in list(database.get_counties_by_war_status(session, data["war_status"]))]
+    
+    # Check if any countries matched
     bool_response = True if len(countries) > 0 else False
+    
+    # Build message string with matched countries
     message = "Countries matched - "
     for country in countries:
         message += str(country)
         message += " "
+    
     return bool_response, message
 
+
+# Function to get all countries with population over specified number
 def get_all_countries_over_population_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries with population over number")
+    
+    # Get list of countries with population over specified number from database and convert to dict
     countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, int(data["number"])))]
+    
+    # Check if any countries matched
     bool_response = True if len(countries) > 0 else False
+    
+    # Build message string with matched countries
     message = "Countries matched - "
     for country in countries:
         message += str(country)
         message += " "
+    
     return bool_response, message
 
+
+# Function to get all countries founded after specified year
 def get_all_countries_founded_after_year_from_db(session, data: json) -> tuple:
     print("Client choose to get all countries that founded after year")
+    
+    # Get list of countries founded after specified year from database and convert to dict
     countries = [x.to_dict() for x in list(database.get_countries_founded_after_year(session, data["year"]))]
+    
+    # Check if any countries matched
     bool_response = True if len(countries) > 0 else False
+    
+    # Build message string with matched countries
     message = "Countries matched - "
     for country in countries:
         message += str(country)
         message += " "
+    
     return bool_response, message
 
+
+# Function to change a country's name in the database
 def change_a_contry_name_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's name")
+    
+    # Call function in database module to change country's name
     bool_response = database.change_country_name(session, data["old_name"], data["new_name"])
+    
+    # Build message string based on whether change was successful or not
     message = "Changed value" if bool_response else "Couldn't change value"
+    
     return bool_response, message
 
+
+# Function to change a country's war status in the database
 def change_a_country_war_status_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's war status")
+    
+    # Call function in database module to change country's war status
     bool_response = database.change_country_war_status(session, data["name"], data["new_war_status"])
+    
+    # Build message string based on whether change was successful or not
     message = "Changed value" if bool_response else "Couldn't change value"
+    
     return bool_response, message
 
+
+# Function to change a country's population count in the database
 def change_a_country_population_count_in_db(session, data: json) -> tuple:
     print("Client choose to change a country's population")
     bool_response = database.change_country_population(session, data["name"], data["new_population"])

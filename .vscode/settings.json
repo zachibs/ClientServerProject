@@ -1,7 +1,13 @@
 {
     "cSpell.words": [
+        "DPORT",
+        "hwaddr",
         "mydb",
+        "scapy",
+        "sendp",
         "sessionmaker",
-        "sqlalchemy"
+        "siaddr",
+        "sqlalchemy",
+        "yiaddr"
     ]
 }
