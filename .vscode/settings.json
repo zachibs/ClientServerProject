@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "mydb",
+        "sessionmaker",
         "sqlalchemy"
     ]
 }

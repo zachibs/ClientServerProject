@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, Boolean
+from sqlalchemy import create_engine, Column, String, Integer, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
@@ -43,16 +43,18 @@ def get_session():
     
 
 
-def add_value_to_db(session_instance, name: str, population: int, ethnicity: str, founding_year: int , in_war: bool) -> None:
+def add_value_to_db(session_instance, name: str, population: int, ethnicity: str, founding_year: int , in_war: bool) -> bool:
     country_instance = Country(name, population, ethnicity, founding_year, in_war)
     try:
         if (get_country_by_name(session_instance, name)):
             print("Country already exist")
-            return
+            return False
         session_instance.add(country_instance)
         session_instance.commit()
+        return True
     except Exception as e:
         session_instance.rollback()
+        return False
 
 def get_all_countries(session_instance):
     result = session_instance.query(Country).all()
@@ -79,31 +81,30 @@ def get_countries_founded_after_year(session_instance, year):
     result = session_instance.query(Country).filter(Country.founding_year > year).all()
     return result
 
-def change_country_name(session_instance, old_name: str, new_name: str):
+def change_country_name(session_instance, old_name: str, new_name: str) -> bool:
     try:
         session_instance.query(Country).filter(Country.name == old_name).update({"name": new_name})
         session_instance.commit()
+        return True
     except Exception as e:
-        print("Failed to update country's name")
+        return False
 
-def change_country_war_status(session_instance, name: str, new_in_war: str):
+def change_country_war_status(session_instance, name: str, new_in_war: str) -> bool:
     try:
         session_instance.query(Country).filter(Country.name == name).update({"in_war": new_in_war})
         session_instance.commit()
+        return True
     except Exception as e:
-        print("Failed to update country's war status")
+        return False
 
-def change_country_population(session_instance, name: str, new_population: int):
+def change_country_population(session_instance, name: str, new_population: int) -> bool:
     try:
         session_instance.query(Country).filter(Country.name == name).update({"population": new_population})
         session_instance.commit()
+        return True
     except Exception as e:
-        print("Failed to update country's population")
+        return False
 
 if __name__ == "__main__":
-    session = get_session()
-    add_value_to_db(session, "Israel", 8000000, "Mixed", 1948, False)
-    add_value_to_db(session, "Bolivia", 4000000, "Mixed", 1948, False)
-    list_of_countries = [x.to_dict() for x in list(get_all_countries(session))]
-    print(list_of_countries)
+    pass
 
