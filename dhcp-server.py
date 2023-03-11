@@ -6,9 +6,11 @@ from scapy.layers.l2 import Ether
 
 # Constants
 from config import *
+from time import sleep
 
 # Function to handle incoming DHCP packets
 def handle_dhcp_packet(pkt):
+    sleep(1)
     # Get MAC address of the network interface
     server_mac_address = get_if_hwaddr(NETWORK_INTERFACE)
     # Get MAC address of the client requesting DHCP
@@ -21,11 +23,11 @@ def handle_dhcp_packet(pkt):
             print(f"DHCP Discover received from client: {client_mac_address}")
             # Create DHCP offer packet
             dhcp_offer = Ether(src=server_mac_address, dst=client_mac_address)/ \
-                         IP(src=SERVER_IP, dst=CLIENT_IP)/ \
+                         IP(src=SERVER_IP, dst=BROADCAST)/ \
                          UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
                          BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                          DHCP(options=[('message-type', 'offer'), ('subnet_mask', MASK_SUBNET),
-                                       ('router', SERVER_IP), ('name_server', SERVER_IP),
+                                       ('router', SERVER_IP), ('name_server', DNS_SERVER_IP),
                                        ('lease_time', ONE_HOUR_IN_SECONDS)])
             # Print message indicating that DHCP Offer message is being sent
             print(f"Sending DHCP Offer to client: {client_mac_address}")
@@ -42,7 +44,7 @@ def handle_dhcp_packet(pkt):
                        UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
                        BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                        DHCP(options=[('message-type', 'ack'), ('subnet_mask', MASK_SUBNET),
-                                     ('router', SERVER_IP), ('name_server', SERVER_IP),
+                                     ('router', SERVER_IP), ('name_server', DNS_SERVER_IP),
                                      ('lease_time', ONE_HOUR_IN_SECONDS)])
             # Print message indicating that DHCP ACK message is being sent
             print(f"Sending DHCP ACK to client: {client_mac_address}")

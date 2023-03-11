@@ -2,12 +2,14 @@ from scapy.all import *
 from scapy.sendrecv import sniff, send
 from scapy.layers.inet import UDP, IP
 from scapy.layers.dns import DNS, DNSQR, DNSRR
+from time import sleep
 
 # Importing the variables from the configuration file
 from config import *
 
 
 def handle_dns_packet(pkt):
+    sleep(1)
     # Check if the packet contains a DNS layer
     if not pkt.haslayer(DNS):
         return
@@ -34,9 +36,11 @@ def handle_dns_packet(pkt):
     # source and destination ports, and with the DNS resource record created earlier
     response = IP(src=DNS_SERVER_IP, dst=pkt[IP].src) / \
                UDP(sport=DNS_SPORT, dport=pkt[UDP].sport) / \
-               DNS(id=pkt[DNS].id, an=dnsrr, qr=1)
-    
+               DNS(id=pkt[DNS].id, an=dnsrr, qr=1)   
+                
     # Send the DNS response packet
+    # print(f"Response - {response}")
+    print(f"Sent Response to IP={pkt[IP].src}")
     send(response)
 
 
