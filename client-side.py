@@ -110,7 +110,7 @@ def main():
 
     new_client_ip_address, dns_server_ip_address = start_dhcp_client()
 
-    app_ip_address = query_dns_server_for_ip(APP_DOMAIN)
+    app_ip_address = query_dns_server_for_ip(APP_DOMAIN, new_client_ip_address, dns_server_ip_address)
 
     print(new_client_ip_address, dns_server_ip_address, app_ip_address)
 

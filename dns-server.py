@@ -1,34 +1,40 @@
 from config import *
 import socket
 import json
+from scapy.layers.dns import DNS, DNSQR, DNSRR
 
 
 
 def handle_dns_request(sock, data, address):
     DNS_DATABASE = {APP_DOMAIN:APP_SERVER_IP}
 
-    request_json = json.loads(data.decode())
-    print(f"Received DNS query from {address}: requested domain name: {request_json['domain']}")
+    # request_json = json.loads(data.decode())
+    # print(f"Received DNS query from {address}: requested domain name: {request_json['domain']}")
     
-    # Extract the domain name from the query
-    domain_name = request_json["domain"]
+    # # Extract the domain name from the query
+    # domain_name = request_json["domain"]
+
+    dns_data = (DNS(data))
+    domain_name = dns_data.qd.qname.decode('utf-8')[:-1]
     
     # Check if the domain name is in our DNS table
     if domain_name in DNS_DATABASE:
         # If so, construct the DNS response with the IP address
         ip_address = DNS_DATABASE[domain_name]
-        response = json.dumps({"ip":ip_address})
+        dnsrr = DNSRR(rrname=APP_DOMAIN, type="A", rclass="IN", ttl=60, rdata=ip_address)
+        response = DNS(id=dns_data.id, an=dnsrr, qr=1)
         print(f"Sending DNS response to {address}: {response}")
         
         # Encode the response and send it back to the client
-        sock.sendto(response.encode(), address)
+        sock.sendto(bytes(response), address)
     else:
         # If not, respond with an error message
-        response = json.dumps({"ip":"not found"})
+        dnsrr = DNSRR(rrname=APP_DOMAIN, type="A", rclass="IN", ttl=60, rdata="0.0.0.0")
+        response = DNS(id=dns_data.id, an=dnsrr, qr=1)
         print(f"Sending DNS response to {address}: {response}")
         
         # Encode the response and send it back to the client
-        sock.sendto(response.encode(), address)
+        sock.sendto(bytes(response), address)
 
 def start_dns_server(dns_server_ip):
     # Create a UDP socket
