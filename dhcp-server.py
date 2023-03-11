@@ -18,34 +18,34 @@ def handle_dhcp_packet(pkt):
         # Check if it's a DHCP Discover message
         if pkt[DHCP].options[0][1] == 1:
             # Print message indicating that DHCP Discover message has been received
-            print("DHCP Discover received from client: {}".format(client_mac_address))
+            print(f"DHCP Discover received from client: {client_mac_address}")
             # Create DHCP offer packet
             dhcp_offer = Ether(src=server_mac_address, dst=client_mac_address)/ \
                          IP(src=SERVER_IP, dst=CLIENT_IP)/ \
-                         UDP(sport=SPORT, dport=DPORT)/ \
+                         UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
                          BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                          DHCP(options=[('message-type', 'offer'), ('subnet_mask', MASK_SUBNET),
                                        ('router', SERVER_IP), ('name_server', SERVER_IP),
                                        ('lease_time', ONE_HOUR_IN_SECONDS)])
             # Print message indicating that DHCP Offer message is being sent
-            print("Sending DHCP Offer to client: {}".format(client_mac_address))
+            print(f"Sending DHCP Offer to client: {client_mac_address}")
             # Send DHCP Offer packet to the client
             sendp(dhcp_offer, iface=NETWORK_INTERFACE)
             
         # Check if it's a DHCP Request message
         elif pkt[DHCP].options[0][1] == 3:
             # Print message indicating that DHCP Request message has been received
-            print("DHCP Request received from client: {}".format(client_mac_address)) 
+            print(f"DHCP Request received from client: {client_mac_address}") 
             # Create DHCP ACK packet
             dhcp_ack = Ether(src=server_mac_address, dst=client_mac_address)/ \
                        IP(src=SERVER_IP, dst=BROADCAST)/ \
-                       UDP(sport=SPORT, dport=DPORT)/ \
+                       UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
                        BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                        DHCP(options=[('message-type', 'ack'), ('subnet_mask', MASK_SUBNET),
                                      ('router', SERVER_IP), ('name_server', SERVER_IP),
                                      ('lease_time', ONE_HOUR_IN_SECONDS)])
             # Print message indicating that DHCP ACK message is being sent
-            print("Sending DHCP ACK to client: {}".format(client_mac_address))
+            print(f"Sending DHCP ACK to client: {client_mac_address}")
             # Send DHCP ACK packet to the client
             sendp(dhcp_ack, iface=NETWORK_INTERFACE)
 
