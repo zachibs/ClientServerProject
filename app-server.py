@@ -1,6 +1,7 @@
 import socket
 import database
 import json
+from config import *
 
 BUFFER_SIZE = 1024
 
@@ -162,7 +163,7 @@ def change_a_country_population_count_in_db(session, data: json) -> tuple:
     return bool_response, message
 
 def main():
-    server_socket = create_server_socket("localhost", 1234)
+    server_socket = create_server_socket(APP_SERVER_IP, 1234)
     while True:
         client_socket, client_address = connect_to_client(server_socket)
         while True:

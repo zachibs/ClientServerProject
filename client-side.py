@@ -116,7 +116,7 @@ def main():
 
     # Connect to server
 
-    client_socket = connect_to_server("localhost", 1234)
+    client_socket = connect_to_server(APP_SERVER_IP, 1234)
 
     if client_socket == None:
         return
