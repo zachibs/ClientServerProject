@@ -8,8 +8,12 @@ from time import sleep
 # Constants
 from config import *
 
+new_client_ip_address = 0
+dns_ip = 0
+
 # Function to handle incoming DHCP packets
 def handle_dhcp_packet(pkt):
+
     sleep(1)
     # Check if it's a DHCP Offer message
     if pkt[DHCP] and pkt[DHCP].options[0][1] == 2:
@@ -37,6 +41,11 @@ def handle_dhcp_packet(pkt):
         print("DHCP ACK Received")
         print(f"IP Received: {pkt[BOOTP].yiaddr}")
         print(f"DNS Server ip Received: {pkt[DHCP].options[3][1]}")
+        global new_client_ip_address
+        global dns_ip
+        new_client_ip_address = pkt[BOOTP].yiaddr
+        dns_ip = pkt[DHCP].options[3][1]
+        sleep(1)
 
 def send_dhcp_discover():
     mac_str = uuid.getnode()
@@ -55,7 +64,7 @@ def send_dhcp_discover():
     sendp(dhcp_discover, iface=NETWORK_INTERFACE)
 
 # Main function
-if __name__ == '__main__':
+def start_dhcp_client():
     # Print message indicating that the DHCP client is starting
     print("Starting DHCP client...")
 
@@ -63,4 +72,6 @@ if __name__ == '__main__':
     send_dhcp_discover()
 
     # Sniff for DHCP packets on the specified network interface
-    sniff(filter='udp and (port 67 or 68)', prn=handle_dhcp_packet, iface=NETWORK_INTERFACE)
+    sniff(filter='udp and (port 67 or 68)', count=10, timeout=10, prn=handle_dhcp_packet, iface=NETWORK_INTERFACE)
+
+    return (new_client_ip_address, dns_ip)

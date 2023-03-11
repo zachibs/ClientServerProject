@@ -1,51 +1,47 @@
-from scapy.all import *
-from scapy.sendrecv import sniff, send
-from scapy.layers.inet import UDP, IP
-from scapy.layers.dns import DNS, DNSQR, DNSRR
-from time import sleep
-
-# Importing the variables from the configuration file
 from config import *
+import socket
+import json
 
 
-def handle_dns_packet(pkt):
-    sleep(1)
-    # Check if the packet contains a DNS layer
-    if not pkt.haslayer(DNS):
-        return
-    
-    # Check if the packet contains a DNS query
-    if not pkt.haslayer(DNSQR):
-        return
-    
-    # Get the requested domain name from the DNS query
-    req_name = pkt[DNSQR].qname.decode().rstrip(".")
-    
-    # Check if the requested domain name matches the application domain name
-    if req_name != APP_DOMAIN:
-        return
-    
-    # Extract the query from the packet and print it to the console
-    query = pkt[DNS].qd.qname.decode('utf-8')[:-1]
-    print(f"Received DNS query for {query}")
-    
-    # Create a DNS resource record for the application server IP
-    dnsrr = DNSRR(rrname=APP_DOMAIN, type="A", rclass="IN", ttl=60, rdata=APP_SERVER_IP)
-    
-    # Create a DNS response packet with the appropriate source and destination IP addresses,
-    # source and destination ports, and with the DNS resource record created earlier
-    response = IP(src=DNS_SERVER_IP, dst=pkt[IP].src) / \
-               UDP(sport=DNS_SPORT, dport=pkt[UDP].sport) / \
-               DNS(id=pkt[DNS].id, an=dnsrr, qr=1)   
-                
-    # Send the DNS response packet
-    # print(f"Response - {response}")
-    print(f"Sent Response to IP={pkt[IP].src}")
-    send(response)
 
+def handle_dns_request(sock, data, address):
+    DNS_DATABASE = {APP_DOMAIN:APP_SERVER_IP}
 
-if __name__ == '__main__':
-    print("DNS Server is running")
-    # Sniff for incoming DNS packets on the specified network interface, and call the
-    # handle_dns_packet function for each packet that matches the filter
-    sniff(filter="udp port 53", prn=handle_dns_packet, iface=NETWORK_INTERFACE)
+    request_json = json.loads(data.decode())
+    print(f"Received DNS query from {address}: requested domain name: {request_json['domain']}")
+    
+    # Extract the domain name from the query
+    domain_name = request_json["domain"]
+    
+    # Check if the domain name is in our DNS table
+    if domain_name in DNS_DATABASE:
+        # If so, construct the DNS response with the IP address
+        ip_address = DNS_DATABASE[domain_name]
+        response = json.dumps({"ip":ip_address})
+        print(f"Sending DNS response to {address}: {response}")
+        
+        # Encode the response and send it back to the client
+        sock.sendto(response.encode(), address)
+    else:
+        # If not, respond with an error message
+        response = json.dumps({"ip":"not found"})
+        print(f"Sending DNS response to {address}: {response}")
+        
+        # Encode the response and send it back to the client
+        sock.sendto(response.encode(), address)
+
+def start_dns_server(dns_server_ip):
+    # Create a UDP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Bind the socket to the DNS port
+    sock.bind((dns_server_ip, DNS_SPORT))
+    print(f"DNS server listening on port {DNS_SPORT}...")
+
+    # Wait for DNS queries and handle them
+    while True:
+        data, addr = sock.recvfrom(1024)
+        handle_dns_request(sock, data, addr)
+
+if __name__ == "__main__":
+    start_dns_server(DNS_SERVER_IP)

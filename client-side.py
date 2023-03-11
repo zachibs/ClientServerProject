@@ -1,6 +1,8 @@
 import socket
 import json
-
+from config import *
+from dhcpclient import start_dhcp_client
+from dnsclient import query_dns_server_for_ip
 BUFFER_SIZE = 1024
 
 # Function to connect to the server
@@ -103,7 +105,17 @@ def change_country_population() -> json:
 
 # Define main function
 def main():
+
+    # Get app ip address and dns server ip address:
+
+    new_client_ip_address, dns_server_ip_address = start_dhcp_client()
+
+    app_ip_address = query_dns_server_for_ip(APP_DOMAIN)
+
+    print(new_client_ip_address, dns_server_ip_address, app_ip_address)
+
     # Connect to server
+
     client_socket = connect_to_server("localhost", 1234)
 
     if client_socket == None:
