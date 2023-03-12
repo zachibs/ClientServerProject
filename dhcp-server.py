@@ -3,7 +3,7 @@ from scapy.all import *
 from scapy.layers.dhcp import DHCP, BOOTP
 from scapy.layers.inet import IP, UDP
 from scapy.layers.l2 import Ether
-
+import random
 # Constants
 from config import *
 from time import sleep
@@ -22,10 +22,14 @@ def handle_dhcp_packet(pkt):
             # Print message indicating that DHCP Discover message has been received
             print(f"DHCP Discover received from client: {client_mac_address}")
             # Create DHCP offer packet
+            client_ip_to_offer = "192.168.13."
+            num = random.randint(2,254)
+            client_ip_to_offer = client_ip_to_offer + str(num)
+
             dhcp_offer = Ether(src=server_mac_address, dst=client_mac_address)/ \
                          IP(src=SERVER_IP, dst=BROADCAST)/ \
                          UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
-                         BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
+                         BOOTP(op=2, yiaddr=client_ip_to_offer, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                          DHCP(options=[('message-type', 'offer'), ('subnet_mask', MASK_SUBNET),
                                        ('router', SERVER_IP), ('name_server', DNS_SERVER_IP),
                                        ('lease_time', ONE_HOUR_IN_SECONDS)])
@@ -39,10 +43,13 @@ def handle_dhcp_packet(pkt):
             # Print message indicating that DHCP Request message has been received
             print(f"DHCP Request received from client: {client_mac_address}") 
             # Create DHCP ACK packet
+            client_ip_to_offer = "192.168.13."
+            num = random.randint(2,254)
+            client_ip_to_offer = client_ip_to_offer + str(num)
             dhcp_ack = Ether(src=server_mac_address, dst=client_mac_address)/ \
                        IP(src=SERVER_IP, dst=BROADCAST)/ \
                        UDP(sport=DHCP_SPORT, dport=DHCP_DPORT)/ \
-                       BOOTP(op=2, yiaddr=CLIENT_IP, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
+                       BOOTP(op=2, yiaddr=client_ip_to_offer, siaddr=SERVER_IP, xid=pkt[BOOTP].xid)/ \
                        DHCP(options=[('message-type', 'ack'), ('subnet_mask', MASK_SUBNET),
                                      ('router', SERVER_IP), ('name_server', DNS_SERVER_IP),
                                      ('lease_time', ONE_HOUR_IN_SECONDS)])

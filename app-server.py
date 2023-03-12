@@ -10,7 +10,7 @@ def create_server_socket(server_ip: str, server_port: int) -> socket.socket:
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (server_ip, server_port)
     server_socket.bind(server_address)
-    server_socket.listen(1)
+    server_socket.listen(5)
     return server_socket
 
 # Waits for and accepts a client connection, returning a socket and client address tuple.
@@ -23,7 +23,7 @@ def connect_to_client(server_socket: socket.socket) -> tuple:
 # Receives and decodes data from the client and returns it as a JSON object.
 def receive_data_from_client(client_socket: socket.socket, client_address: str) -> json:
     print("waiting for data from the client")
-    client_socket.settimeout(30.0)
+    client_socket.settimeout(60.0)
     data = client_socket.recv(BUFFER_SIZE)
     data = json.loads(data.decode())
     print(f'Received "{data}" from {client_address} OPENED')

@@ -38,6 +38,6 @@ def handle_dns_packet(pkt):
 
 def query_dns_server_for_ip(app_domain_to_find, new_client_ip_address, dns_server_ip_address):
     send_dns_request(app_domain_to_find, new_client_ip_address, dns_server_ip_address) 
-    sniff(filter=f"udp port 53 and src {DNS_SERVER_IP}", count=2, timeout=10, prn=handle_dns_packet, iface=NETWORK_INTERFACE)
+    sniff(filter=f"udp port 53 and src {dns_server_ip_address}", count=2, timeout=10, prn=handle_dns_packet, iface=NETWORK_INTERFACE)
     print(app_server_ip)
     return app_server_ip
