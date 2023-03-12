@@ -116,7 +116,7 @@ def main():
 
     # Connect to server
 
-    client_socket = connect_to_server(app_ip_address, 1234)
+    client_socket = connect_to_server(app_ip_address, APP_SERVER_DST_PORT)
 
     if client_socket == None:
         return
