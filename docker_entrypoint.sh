@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-exec sudo python3 dhcp-server.py &
-exec sudo python3 dns-server.py &
-exec sudo python3 app-server.py &
+exec sudo python3 dhcp_server.py &
+exec sudo python3 dns_server.py &
+exec sudo python3 app_server.py &

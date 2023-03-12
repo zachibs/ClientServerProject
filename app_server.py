@@ -90,7 +90,7 @@ def get_all_countries_from_db(session: session.Session, data: json) -> tuple:
     print("Client choose to get all countries")
     countries = [x.to_dict() for x in list(database.get_all_countries(session))]
     bool_response = True if len(countries) > 0 else False
-    message = "Countries matched - "
+    message = ""
     for country in countries:
         message += str(country)
         message += " "
@@ -111,7 +111,7 @@ def get_country_by_name_from_db(session: session.Session, data: json) -> tuple:
     print("Client choose to get a specific country")
     country = list(database.get_country_by_name(session,data["name"]))
     bool_response = True if len(country) > 0 else False
-    message = f"Country matched - {country[0].to_dict()}"
+    message = f"{country[0].to_dict()}"
     return bool_response, message
 
 
@@ -129,7 +129,7 @@ def get_country_by_ethnicity_from_db(session: session.Session, data: json) -> tu
     print("Client choose to get all countries by a specific ethnicity")
     countries = [x.to_dict() for x in list(database.get_countries_by_ethnicity(session, data["ethnicity"]))]
     bool_response = True if len(countries) > 0 else False
-    message = "Countries matched - "
+    message = ""
     for country in countries:
         message += str(country)
         message += " "
@@ -152,7 +152,7 @@ def get_all_countries_by_war_status_from_db(session: session.Session, data: json
     countries = [x.to_dict() for x in list(database.get_counties_by_war_status(session, data["war_status"]))]
     bool_response = True if len(countries) > 0 else False
 
-    message = "Countries matched - "
+    message = ""
     for country in countries:
         message += str(country)
         message += " "
@@ -177,7 +177,7 @@ def get_all_countries_over_population_from_db(session: session.Session, data: js
 
     bool_response = True if len(countries) > 0 else False
 
-    message = "Countries matched - "
+    message = ""
     for country in countries:
         message += str(country)
         message += " "
@@ -209,7 +209,7 @@ def get_all_countries_founded_after_year_from_db(session: session.Session, data:
     bool_response = True if len(countries) > 0 else False
 
     # Build message string with matched countries
-    message = "Countries matched - "
+    message = ""
     for country in countries:
         message += str(country)
         message += " "

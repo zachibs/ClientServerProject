@@ -4,3 +4,5 @@
 * `docker build -t "latestnetworksserver" .`
 * `docker run -it --name latestnetworkserver -p 3300:22 -d latestnetworksserver`
 * `ssh admin@localhost -p 3300`
+* `cd ComputerNetworksFinal`
+* `sudo python3 client_side.py`
