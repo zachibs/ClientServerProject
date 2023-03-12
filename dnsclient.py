@@ -41,3 +41,7 @@ def query_dns_server_for_ip(app_domain_to_find, new_client_ip_address, dns_serve
     sniff(filter=f"udp port 53 and src {dns_server_ip_address}", count=2, timeout=10, prn=handle_dns_packet, iface=NETWORK_INTERFACE)
     print(app_server_ip)
     return app_server_ip
+
+if __name__ == "__main__":
+    inp = input("Enter domain name: ")
+    query_dns_server_for_ip(inp, CLIENT_IP, DNS_SERVER_IP)

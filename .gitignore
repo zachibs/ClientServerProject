@@ -352,3 +352,4 @@ MigrationBackup/
 # enviorement
 env/*
 .vscode/*
+docker-commands.txt

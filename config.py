@@ -14,3 +14,19 @@ DNS_SPORT = 53
 APP_SERVER_SRC_PORT = 20890
 APP_SERVER_DST_PORT = 30501
 ONE_HOUR_IN_SECONDS = 600
+
+if __name__ == "__main__":
+    import netifaces
+    # Get a list of network interfaces
+    interfaces = netifaces.interfaces()
+
+    # Iterate through each interface
+    for iface in interfaces:
+        # Get the IP addresses for the interface
+        addrs = netifaces.ifaddresses(iface)
+        ipaddrs = addrs.get(netifaces.AF_INET, [])
+
+        # Print the IP addresses for the interface
+        print("IP addresses for", iface)
+        for addr in ipaddrs:
+            print("- ", addr['addr'])
