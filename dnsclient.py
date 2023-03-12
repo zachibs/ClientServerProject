@@ -16,7 +16,6 @@ def send_dns_request(app_domain_to_find, new_client_ip_address, dns_server_ip_ad
 
 def handle_dns_packet(pkt):
     sleep(1)
-    print(type(pkt))
     global app_server_ip
     if not pkt[IP]:
         return

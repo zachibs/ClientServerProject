@@ -46,7 +46,7 @@ def handle_dns_packet(pkt: Ether) -> None:
 
 
 if __name__ == '__main__':
-    print("DNS Server is running")
+    print("Starting DNS server...")
     # Sniff for incoming DNS packets on the specified network interface, and call the
     # handle_dns_packet function for each packet that matches the filter
     sniff(filter="udp port 53", prn=handle_dns_packet, iface=NETWORK_INTERFACE)
