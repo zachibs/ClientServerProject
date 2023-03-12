@@ -26,6 +26,8 @@ RUN sudo apt-get install -y python3-scapy
 
 WORKDIR "/home/ubuntu/"
 
+RUN echo "hello"
+
 RUN git clone https://zachibs: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@github.com/zachibs/ComputerNetworksFinal.git
 
 WORKDIR "/home/ubuntu/ComputerNetworksFinal"
