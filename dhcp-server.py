@@ -80,4 +80,4 @@ if __name__ == '__main__':
     # Print message indicating that the DHCP server is starting
     print("Starting DHCP server...")
     # Sniff for DHCP packets on the specified network interface
-    sniff(filter='udp and (port 67 or 68)', prn=handle_dhcp_packet ,iface=NETWORK_INTERFACE)
+    sniff(filter='udp and udp src port 68', prn=handle_dhcp_packet ,iface=NETWORK_INTERFACE)

@@ -72,6 +72,9 @@ def start_dhcp_client() -> tuple:
     send_dhcp_discover()
 
     # Sniff for DHCP packets on the specified network interface
-    sniff(filter='udp and (port 67 or 68)', count=10, timeout=10, prn=handle_dhcp_packet, iface=NETWORK_INTERFACE)
+    sniff(filter='udp and udp src port 67', count=5, timeout=10, prn=handle_dhcp_packet, iface=NETWORK_INTERFACE)
 
     return (new_client_ip_address, dns_ip)
+
+if __name__ == "__main__":
+    print(start_dhcp_client())
