@@ -15,7 +15,7 @@ global given_out
 given_out = []
 
 # Function to handle incoming DHCP packets
-def handle_dhcp_packet(pkt):
+def handle_dhcp_packet(pkt: Ether) -> None:
     sleep(2)
     # Get MAC address of the network interface
     server_mac_address = get_if_hwaddr(NETWORK_INTERFACE)

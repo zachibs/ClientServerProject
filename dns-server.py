@@ -2,13 +2,14 @@ from scapy.all import *
 from scapy.sendrecv import sniff, send
 from scapy.layers.inet import UDP, IP
 from scapy.layers.dns import DNS, DNSQR, DNSRR
+from scapy.layers.l2 import Ether
 from time import sleep
 
 # Importing the variables from the configuration file
 from config import *
 
 
-def handle_dns_packet(pkt):
+def handle_dns_packet(pkt: Ether) -> None:
     sleep(1)
     # Check if the packet contains a DNS layer
     if not pkt.haslayer(DNS):

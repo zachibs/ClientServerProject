@@ -12,7 +12,7 @@ new_client_ip_address = 0
 dns_ip = 0
 
 # Function to handle incoming DHCP packets
-def handle_dhcp_packet(pkt):
+def handle_dhcp_packet(pkt: Ether) -> None:
 
     sleep(1)
     # Check if it's a DHCP Offer message
@@ -47,7 +47,7 @@ def handle_dhcp_packet(pkt):
         dns_ip = pkt[DHCP].options[3][1]
         sleep(1)
 
-def send_dhcp_discover():
+def send_dhcp_discover() -> None:
     mac_str = uuid.getnode()
     client_mac_address = ':'.join(['{:02x}'.format((mac_str >> i) & 0xff) for i in range(0, 48, 8)])
     
@@ -64,7 +64,7 @@ def send_dhcp_discover():
     sendp(dhcp_discover, iface=NETWORK_INTERFACE)
 
 # Main function
-def start_dhcp_client():
+def start_dhcp_client() -> tuple:
     # Print message indicating that the DHCP client is starting
     print("Starting DHCP client...")
 
