@@ -18,21 +18,28 @@ RUN sudo apt-get install pip -y
 
 RUN sudo apt-get install net-tools -y
 
+ENV TZ=Asia/Jerusalem
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN sudo apt-get install -y python3-scapy
+
+WORKDIR "/home/ubuntu/"
 
 RUN git clone https://zachibs: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@github.com/zachibs/ComputerNetworksFinal.git
 
-WORKDIR "/ComputerNetworksFinal"
+WORKDIR "/home/ubuntu/ComputerNetworksFinal"
 
 RUN pip install -r requirements.txt
 
+RUN 
+
 RUN sudo pip install -r requirements.txt
 
-RUN python3 find_interface.py
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN sh
+RUN chmod u+x docker_entrypoint.sh
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd","-D"]
-
+CMD python3 /home/ubuntu/ComputerNetworksFinal/find_interface.py; sh /home/ubuntu/ComputerNetworksFinal/docker_entrypoint.sh; /usr/sbin/sshd -D
