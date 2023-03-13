@@ -18,8 +18,9 @@ def create_server_socket(server_ip: str, server_port: int) -> socket.socket:
     """
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (server_ip, server_port)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind(server_address)
-    server_socket.listen(5)
+    server_socket.listen(10)
     return server_socket
 
 
@@ -109,9 +110,9 @@ def get_country_by_name_from_db(session: session.Session, data: json) -> tuple:
     tuple: Tuple of a boolean indicating success and a message
     """
     print("Client choose to get a specific country")
-    country = list(database.get_country_by_name(session,data["name"]))
-    bool_response = True if len(country) > 0 else False
-    message = f"{country[0].to_dict()}"
+    country = database.get_country_by_name(session,data["name"])
+    message = country.to_dict()
+    bool_response = True if country != None else False
     return bool_response, message
 
 

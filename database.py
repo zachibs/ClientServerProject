@@ -150,7 +150,7 @@ def get_country_by_name(session_instance: session.Session, country_name: str) ->
     Returns:
         Query: The country object matching the given name.
     """
-    result = session_instance.query(Country).filter(Country.name == country_name)
+    result = session_instance.query(Country).filter(Country.name == country_name).first()
     return result
 
 

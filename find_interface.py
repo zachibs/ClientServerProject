@@ -11,6 +11,12 @@ for iface in interfaces:
     if iface == "eth0":
         NETWORK_INTERFACE = "eth0"
         APP_SERVER_IP = ipaddrs[0]['addr']
+    if iface == "ens33":
+        NETWORK_INTERFACE = "ens33"
+        APP_SERVER_IP = ipaddrs[0]['addr']
+    if iface == "enp0s3":
+        NETWORK_INTERFACE = "enp0s3"
+        APP_SERVER_IP = ipaddrs[0]['addr']
 
 print(f"{NETWORK_INTERFACE}, {APP_SERVER_IP}")
 

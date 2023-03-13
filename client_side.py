@@ -20,6 +20,8 @@ def connect_to_server(server_ip: str, server_port: int) -> socket.socket:
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create a TCP socket
         server_address = (server_ip, server_port) # Tuple containing the IP address and port of the server
+        client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        client_socket.bind(("", APP_SERVER_SRC_PORT))
         client_socket.connect(server_address) # Connect to the server
     except Exception as e:
         print("Failed to connect to server")
