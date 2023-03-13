@@ -137,7 +137,10 @@ def get_all_countries(session_instance: session.Session) -> list:
     Returns:
         list: A list of all countries in the database.
     """
-    result = session_instance.query(Country).all()
+    try:
+        result = session_instance.query(Country).all()
+    except:
+        result = None
     return result
 
 def get_country_by_name(session_instance: session.Session, country_name: str) -> query:
@@ -150,7 +153,10 @@ def get_country_by_name(session_instance: session.Session, country_name: str) ->
     Returns:
         Query: The country object matching the given name.
     """
-    result = session_instance.query(Country).filter(Country.name == country_name).first()
+    try:
+        result = session_instance.query(Country).filter(Country.name == country_name).first()
+    except:
+        result = None
     return result
 
 
@@ -164,7 +170,10 @@ def get_countries_by_ethnicity(session_instance: session.Session, ethnicity: str
     Returns:
         list: A list of all countries with the specified ethnicity.
     """
-    result = session_instance.query(Country).filter(Country.ethnicity == ethnicity).all()
+    try:
+        result = session_instance.query(Country).filter(Country.ethnicity == ethnicity).all()
+    except:
+        result = None
     return result
 
 def get_counties_by_war_status(session_instance: session.Session, in_war: bool) -> list:
@@ -177,7 +186,10 @@ def get_counties_by_war_status(session_instance: session.Session, in_war: bool) 
     Returns:
         list: A list of all countries with the specified war status.
     """
-    result = session_instance.query(Country).filter(Country.in_war == in_war).all()
+    try:
+        result = session_instance.query(Country).filter(Country.in_war == in_war).all()
+    except:
+        result = None
     return result
 
 def get_counties_with_population_over_number(session_instance: session.Session, min_number_of_people: int) -> list:
@@ -190,7 +202,10 @@ def get_counties_with_population_over_number(session_instance: session.Session, 
     Returns:
         list: A list of all countries with a population greater than or equal to the specified value.
     """
-    result = session_instance.query(Country).filter(Country.population >= min_number_of_people).all()
+    try:
+        result = session_instance.query(Country).filter(Country.population >= min_number_of_people).all()
+    except:
+        result = None
     return result
 
 
@@ -207,7 +222,10 @@ def get_countries_founded_after_year(session_instance: session.Session, year: in
         list: A list of Country objects.
 
     """
-    result = session_instance.query(Country).filter(Country.founding_year > year).all()
+    try:
+        result = session_instance.query(Country).filter(Country.founding_year > year).all()
+    except:
+        result = None
     return result
 
 
@@ -276,5 +294,27 @@ def change_country_population(session_instance: session.Session, name: str, new_
         session_instance.query(Country).filter(Country.name == name).update({"population": new_population})
         session_instance.commit()
         return True
+    except Exception as e:
+        return False
+
+
+def delete_country(session_instance: session.Session, name: str) -> bool:
+    """
+    This function takes a session instance, the name of the country name as inputs  
+    and deletes the country from the database. 
+    If the operation is successful, it returns True; otherwise, it returns False.
+
+    Args:
+        session_instance (Session): An instance of the SQLAlchemy Session class.
+        name (str): The name of the country you want to delete.
+
+    Returns:
+        bool: True if the operation is successful; otherwise, False.
+
+    """
+    try:
+        country = session_instance.query(Country).filter(Country.name == name).delete()
+        session_instance.commit()
+        return country
     except Exception as e:
         return False

@@ -37,7 +37,7 @@ def print_menu() -> None:
     print("Menu of options:\n 1.Add a country\n 2.Get all countries\n 3.Get a specific country\n \
 4.Get all countries by a specific ethnicity\n 5.Get all countries by a specific war status\n \
 6.get all countries with population over number\n 7.Get all countries that founded after year\n \
-8.Change a country's name\n 9.Change a country's war status\n 10.Change a country's population")
+8.Change a country's name\n 9.Change a country's war status\n 10.Change a country's population\n 11. Delete a country by its name\n 12-inf. exit menu")
 
 
 def get_user_choice() -> int:
@@ -117,7 +117,12 @@ def get_country_by_war_status() -> json:
     JSON-formatted request with the choice to search for countries by war status and the war status to search for.
     """
     in_war_prompt = input("Please enter the country's war status (True or False): ")
-    in_war = True if in_war_prompt == "True" else False
+    if in_war_prompt == "True":
+        in_war = True
+    elif in_war_prompt == "False":
+        in_war = False
+    else:
+        in_war = in_war_prompt
     request = json.dumps({"choice": 5, "war_status": in_war})
     return request
 
@@ -184,6 +189,16 @@ def change_country_population() -> json:
     request = json.dumps({"choice":10, "name":name, "new_population":new_population})
     return request
 
+def delete_country_by_name() -> json:
+    """Prompts the user to enter the name of the country they want to delete, and returns a JSON-formatted request.
+
+    Returns:
+    JSON-formatted request
+    """
+    name = input("Please enter the country's name whom you want delete: ")
+    request = json.dumps({"choice":11, "name":name})
+    return request
+
 # Define main function
 def main():
 
@@ -231,6 +246,8 @@ def main():
                 request = change_country_war_status()
             elif (choice == 10):
                 request = change_country_population()
+            elif (choice == 11):
+                request = delete_country_by_name()
             else:
                 break
 

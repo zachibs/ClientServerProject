@@ -89,7 +89,12 @@ def get_all_countries_from_db(session: session.Session, data: json) -> tuple:
         tuple: A tuple consisting of a boolean indicating whether the operation was successful and a message.
     """
     print("Client choose to get all countries")
-    countries = [x.to_dict() for x in list(database.get_all_countries(session))]
+    countries = database.get_all_countries(session)
+
+    if countries == None:
+        return False, "No countries found"
+
+    countries = [x.to_dict() for x in list(countries)]
     bool_response = True if len(countries) > 0 else False
     message = ""
     for country in countries:
@@ -111,7 +116,10 @@ def get_country_by_name_from_db(session: session.Session, data: json) -> tuple:
     """
     print("Client choose to get a specific country")
     country = database.get_country_by_name(session,data["name"])
-    message = country.to_dict()
+    if country == None:
+        message = "Country not Found"
+    else:
+        message = country.to_dict()
     bool_response = True if country != None else False
     return bool_response, message
 
@@ -128,7 +136,10 @@ def get_country_by_ethnicity_from_db(session: session.Session, data: json) -> tu
     tuple: Tuple of a boolean indicating success and a message
     """
     print("Client choose to get all countries by a specific ethnicity")
-    countries = [x.to_dict() for x in list(database.get_countries_by_ethnicity(session, data["ethnicity"]))]
+    countries = database.get_countries_by_ethnicity(session, data["ethnicity"])
+    if countries == None:
+        return False, "No countries found"
+    countries = [x.to_dict() for x in list(countries)]
     bool_response = True if len(countries) > 0 else False
     message = ""
     for country in countries:
@@ -149,8 +160,10 @@ def get_all_countries_by_war_status_from_db(session: session.Session, data: json
     tuple: Tuple of a boolean indicating success and a message
     """
     print("Client choose to get all countries by a specific war status")
-
-    countries = [x.to_dict() for x in list(database.get_counties_by_war_status(session, data["war_status"]))]
+    countries = database.get_counties_by_war_status(session, data["war_status"])
+    if countries == None:
+        return False, "No countries found"
+    countries = [x.to_dict() for x in list(countries)]
     bool_response = True if len(countries) > 0 else False
 
     message = ""
@@ -173,8 +186,10 @@ def get_all_countries_over_population_from_db(session: session.Session, data: js
     tuple: Tuple of a boolean indicating success and a message
     """
     print("Client choose to get all countries with population over number")
-
-    countries = [x.to_dict() for x in list(database.get_counties_with_population_over_number(session, int(data["number"])))]
+    countries = database.get_counties_with_population_over_number(session, int(data["number"]))
+    if countries == None:
+        return False, "No countries found"
+    countries = [x.to_dict() for x in list()]
 
     bool_response = True if len(countries) > 0 else False
 
@@ -204,7 +219,10 @@ def get_all_countries_founded_after_year_from_db(session: session.Session, data:
     print("Client choose to get all countries that founded after year")
 
     # Get list of countries founded after specified year from database and convert to dict
-    countries = [x.to_dict() for x in list(database.get_countries_founded_after_year(session, data["year"]))]
+    countries = database.get_countries_founded_after_year(session, data["year"])
+    if countries == None:
+        return False, "No countries found"
+    countries = [x.to_dict() for x in list(countries)]
 
     # Check if any countries matched
     bool_response = True if len(countries) > 0 else False
@@ -290,6 +308,25 @@ def change_a_country_population_count_in_db(session: session.Session, data: json
     message = "Changed value" if bool_response else "Couldn't change value"
     return bool_response, message
 
+
+# Function to change a country's population count in the database
+def delete_country_by_name(session: session.Session, data: json) -> tuple:
+    """
+    Function to delete a country from the database.
+
+    Args:
+        session: The session object to connect to the database.
+        data (dict): The data containing the name of the country to delete.
+
+    Returns:
+        A tuple containing a boolean value indicating whether the population count was changed successfully
+        and a message string indicating whether the change was successful or not.
+    """
+    print("Client choose to delete a country")
+    bool_response = database.delete_country(session, data["name"])
+    message = "deleted country" if bool_response else "Couldn't find country"
+    return bool_response, message
+
 def main():
     print("Starting APP server...")
     server_socket = create_server_socket(APP_SERVER_IP, APP_SERVER_DST_PORT)
@@ -330,6 +367,10 @@ def main():
 
                 elif (choice == 10):
                     bool_response, message = change_a_country_population_count_in_db(session, data)
+
+                elif (choice == 11):
+                    bool_response, message = delete_country_by_name(session, data)
+
                 else:
                     client_socket.close()
                     print(f'Connection from {client_address} CLOSED')
