@@ -36,7 +36,7 @@ RUN sudo pip install -r requirements.txt
 
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN chmod u+x docker_entrypoint.sh
+RUN chmod u+x src/docker_entrypoint.sh
 
 EXPOSE 22
 
