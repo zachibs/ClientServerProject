@@ -1,5 +1,5 @@
 from src.servers.app_server import *
-from db.database import *
+from database import *
 import unittest
 
 

@@ -6,7 +6,7 @@ from scapy.layers.l2 import Ether
 import random
 # Constants
 import sys
-sys.path.append('../')
+sys.path.append('src/')
 print(sys.path)
 from config import *
 from time import sleep

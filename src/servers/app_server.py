@@ -3,9 +3,9 @@ import json
 from sqlalchemy.orm import session
 
 import sys
-sys.path.append('../')
+sys.path.append('src/')
 print(sys.path)
-import db.database as database
+import database as database
 from config import *
 
 BUFFER_SIZE = 1024
