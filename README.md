@@ -15,8 +15,9 @@ A project to demonstrate knowledge regrading the client-server architecture, imp
 3. `docker build -t "latestnetworksserver" .`
 4. `docker run -it --name latestnetworksserver -p 3300:22 -d latestnetworksserver`
 5. `ssh admin@localhost -p 3300`
-6. `cd ClientServerProject/src`
-7. `sudo python3 client_side.py`
+6. password is 1234
+7. `cd ClientServerProject/src`
+8. `sudo python3 client_side.py`
 
 ### Commands to run in local machine:
 1. `git clone https://github.com/zachibs/ClientServerProject.git`
