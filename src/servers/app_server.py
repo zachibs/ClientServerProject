@@ -3,7 +3,7 @@ import json
 from sqlalchemy.orm import session
 
 import sys
-sys.path.append('src/')
+sys.path.append('.')
 print(sys.path)
 import database as database
 from config import *

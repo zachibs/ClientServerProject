@@ -7,7 +7,7 @@ from time import sleep
 
 # Importing the variables from the configuration file
 import sys
-sys.path.append('src/')
+sys.path.append('.')
 print(sys.path)
 from config import *
 
