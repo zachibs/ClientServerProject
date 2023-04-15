@@ -1,4 +1,4 @@
-from app_server import *
+from src.servers.app_server import *
 from database import *
 import unittest
 

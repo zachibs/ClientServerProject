@@ -13,7 +13,7 @@ A project to demonstrate knowledge regrading the client-server architecture, imp
 1. `docker build -t "latestnetworksserver" .`
 2. `docker run -it --name latestnetworksserver -p 3300:22 -d latestnetworksserver`
 3. `ssh admin@localhost -p 3300`
-4. `cd ComputerNetworksFinal`
+4. `cd ClientServerProject`
 5. `sudo python3 client_side.py`
 
 ### Commands to run in local machine:

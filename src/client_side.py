@@ -1,8 +1,8 @@
 import socket
 import json
 from config import *
-from dhcpclient import start_dhcp_client
-from dnsclient import query_dns_server_for_ip
+from clients.dhcp_client import start_dhcp_client
+from clients.dns_client import query_dns_server_for_ip
 BUFFER_SIZE = 1024
 
 

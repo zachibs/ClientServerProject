@@ -26,9 +26,9 @@ RUN sudo apt-get install -y python3-scapy
 
 WORKDIR "/home/ubuntu/"
 
-RUN git clone https://zachibs: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@github.com/zachibs/ComputerNetworksFinal.git
+RUN git clone https://github.com/zachibs/ClientServerProject.git
 
-WORKDIR "/home/ubuntu/ComputerNetworksFinal"
+WORKDIR "/home/ubuntu/ClientServerProject"
 
 RUN pip install -r requirements.txt
 
@@ -40,4 +40,4 @@ RUN chmod u+x docker_entrypoint.sh
 
 EXPOSE 22
 
-CMD python3 /home/ubuntu/ComputerNetworksFinal/find_interface.py; sh /home/ubuntu/ComputerNetworksFinal/docker_entrypoint.sh; /usr/sbin/sshd -D
+CMD python3 /home/ubuntu/ClientServerProject/src/find_interface.py; sh /home/ubuntu/ClientServerProject/src/docker_entrypoint.sh; /usr/sbin/sshd -D
