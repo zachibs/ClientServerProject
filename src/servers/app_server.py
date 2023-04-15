@@ -4,7 +4,7 @@ from sqlalchemy.orm import session
 
 import sys
 sys.path.append('../')
-import database
+import db.database as database
 from config import *
 
 BUFFER_SIZE = 1024
