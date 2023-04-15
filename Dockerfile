@@ -38,4 +38,6 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 EXPOSE 22
 
-CMD sudo python3 /home/ubuntu/ClientServerProject/src/find_interface.py; sh /home/ubuntu/ClientServerProject/src/docker_entrypoint.sh; /usr/sbin/sshd -D
+WORKDIR "/home/ubuntu/ClientServerProject/src"
+
+CMD python3 /home/ubuntu/ClientServerProject/src/find_interface.py; sh /home/ubuntu/ClientServerProject/src/docker_entrypoint.sh; /usr/sbin/sshd -D
