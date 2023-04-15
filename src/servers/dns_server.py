@@ -6,6 +6,8 @@ from scapy.layers.l2 import Ether
 from time import sleep
 
 # Importing the variables from the configuration file
+import sys
+sys.path.append('../')
 from config import *
 
 

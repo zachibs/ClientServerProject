@@ -5,6 +5,8 @@ from scapy.layers.inet import IP, UDP
 from scapy.layers.l2 import Ether
 import random
 # Constants
+import sys
+sys.path.append('../')
 from config import *
 from time import sleep
 

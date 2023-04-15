@@ -1,8 +1,11 @@
 import socket
-import database
 import json
-from config import *
 from sqlalchemy.orm import session
+
+import sys
+sys.path.append('../')
+import database
+from config import *
 
 BUFFER_SIZE = 1024
 
