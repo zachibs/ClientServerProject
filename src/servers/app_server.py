@@ -4,6 +4,7 @@ from sqlalchemy.orm import session
 
 import sys
 sys.path.append('../')
+print(sys.path)
 import db.database as database
 from config import *
 
